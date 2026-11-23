@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Barycenter</title>
+<meta name="description" content="Barycenter is a personal notes app for Windows, being built in the open. Here's what's done and what's next.">
+<meta name="theme-color" content="#050816">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23050816'/%3E%3Cellipse cx='32' cy='32' rx='24' ry='9' fill='none' stroke='%237c8cff' stroke-width='2.5' transform='rotate(-25 32 32)'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23ffe9c7'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@200;300;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050816;
+    --bg-2: #0a1030;
+    --panel: rgba(18, 26, 64, 0.55);
+    --panel-border: rgba(140, 160, 255, 0.14);
+    --text: #e8ebff;
+    --muted: #9aa3c7;
+    --faint: #5f6893;
+    --done: #7ee0c3;
+    --progress: #ffc677;
+    --planned: #9aa8ff;
+    --glow: #b9a8ff;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.55 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ── Sky (fixed canvas behind everything) ───────────────── */
+  #sky {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    display: block;
+  }
+  .veil {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: radial-gradient(ellipse at 50% 120%, rgba(5,8,22,0) 0%, rgba(5,8,22,0.4) 60%);
+    opacity: 0; transition: opacity .2s linear;
+  }
+
+  /* ── Hero ───────────────────────────────────────────────── */
+  .hero {
+    position: relative; z-index: 2;
+    height: 100vh; height: 100svh;
+    display: grid; place-items: center;
+    text-align: center;
+    padding: 0 16px;
+  }
+  .hero-inner { will-change: transform, opacity; }
+  .hero h1 {
+    margin: 0;
+    font-family: Sora, Inter, sans-serif;
+    font-weight: 200;
+    font-size: clamp(2.6rem, 10vw, 7rem);
+    letter-spacing: 0.18em;
+    margin-right: -0.18em; /* balance the letter-spacing */
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #ffffff 30%, #c9c4ff 100%);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 40px rgba(185, 168, 255, 0.25);
+    animation: rise 1.6s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .hero p {
+    margin: 1.1rem 0 0;
+    font-family: Sora, sans-serif;
+    font-weight: 300;
+    font-size: clamp(1rem, 2.4vw, 1.25rem);
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    animation: rise 1.6s .35s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .scroll-hint {
+    position: absolute; left: 50%; bottom: 32px;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    color: var(--faint); text-decoration: none;
+    font-size: .75rem; letter-spacing: .25em; text-transform: uppercase;
+    animation: fade 2s 1.2s both;
+  }
+  .scroll-hint span.line {
+    width: 1px; height: 46px;
+    background: linear-gradient(var(--faint), transparent);
+    animation: drip 2.4s ease-in-out infinite;
+    transform-origin: top;
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(18px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes drip { 0% { transform: scaleY(0); opacity: 0; } 30% { opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
+
+  /* ── Board ──────────────────────────────────────────────── */
+  main {
+    position: relative; z-index: 2;
+    padding: 12vh 16px 10vh;
+    background: linear-gradient(180deg, rgba(5,8,22,0) 0%, rgba(5,8,22,.5) 14vh, rgba(5,8,22,.55) 100%);
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  .eyebrow {
+    font-size: .75rem; letter-spacing: .28em; text-transform: uppercase;
+    color: var(--glow); margin: 0 0 .8rem;
+  }
+  h2 {
+    font-family: Sora, sans-serif; font-weight: 300;
+    font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+    line-height: 1.15; margin: 0 0 1rem; letter-spacing: -0.01em;
+  }
+  .lede { color: var(--muted); max-width: 60ch; margin: 0 0 2.5rem; }
+
+  .stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 14px; margin-bottom: 2.75rem;
+  }
+  .stat {
+    background: var(--panel); border: 1px solid var(--panel-border);
+    border-radius: 16px; padding: 18px 20px;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  }
+  .stat .k { font-size: .78rem; color: var(--muted); letter-spacing: .04em; }
+  .stat .v { font-family: Sora, sans-serif; font-size: 1.9rem; font-weight: 300; margin-top: 4px; }
+  .stat .v small { font-size: .95rem; color: var(--muted); }
+  .meter { height: 6px; border-radius: 99px; background: rgba(255,255,255,.07); margin-top: 12px; overflow: hidden; }
+  .meter i {
+    display: block; height: 100%; width: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--done), #9fd7ff, var(--glow));
+    box-shadow: 0 0 12px rgba(126, 224, 195, .6);
+    transition: width 1.6s cubic-bezier(.2,.7,.2,1);
+  }
+
+  .board {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
+    align-items: start;
+  }
+  .col h3 {
+    display: flex; align-items: center; gap: 10px;
+    font-family: Sora, sans-serif; font-weight: 500; font-size: 1rem;
+    letter-spacing: .06em; margin: 0 0 14px; padding: 0 4px;
+  }
+  .col h3 .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c); box-shadow: 0 0 12px var(--c); }
+  .col h3 .n { margin-left: auto; color: var(--faint); font-weight: 400; font-size: .85rem; }
+  .col[data-status="done"] { --c: var(--done); }
+  .col[data-status="in-progress"] { --c: var(--progress); }
+  .col[data-status="planned"] { --c: var(--planned); }
+  .col[data-status="in-progress"] h3 .dot { animation: pulse 2.2s ease-in-out infinite; }
+  @keyframes pulse { 50% { box-shadow: 0 0 2px var(--c); opacity: .6; } }
+
+  .card {
+    position: relative;
+    background: var(--panel); border: 1px solid var(--panel-border);
+    border-radius: 16px; margin-bottom: 14px;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    overflow: hidden;
+    transition: border-color .25s, transform .25s, opacity .7s, translate .7s;
+  }
+  .card::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+    background: var(--c); opacity: .7;
+  }
+  .card:hover { border-color: rgba(170, 185, 255, .3); }
+  .card.hidden-in { opacity: 0; translate: 0 16px; }
+  .card summary {
+    list-style: none; cursor: pointer;
+    padding: 16px 18px 16px 20px;
+    display: grid; grid-template-columns: 1fr auto; gap: 2px 12px;
+  }
+  .card summary::-webkit-details-marker { display: none; }
+  .card .tag {
+    font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; color: var(--c);
+  }
+  .card .title { font-family: Sora, sans-serif; font-weight: 500; font-size: 1.08rem; grid-column: 1; }
+  .card .sum { color: var(--muted); font-size: .9rem; grid-column: 1; }
+  .card .count {
+    grid-column: 2; grid-row: 1 / span 3; align-self: center;
+    font-size: .8rem; color: var(--muted); white-space: nowrap;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card .chev { width: 14px; height: 14px; transition: transform .25s; opacity: .6; }
+  .card[open] .chev { transform: rotate(180deg); }
+  .card .bar { grid-column: 1 / -1; height: 3px; border-radius: 99px; background: rgba(255,255,255,.06); margin-top: 10px; overflow: hidden; }
+  .card .bar i { display: block; height: 100%; background: var(--c); border-radius: inherit; }
+  .card ul { list-style: none; margin: 0; padding: 0 18px 16px 20px; }
+  .card li {
+    display: grid; grid-template-columns: 18px 1fr; gap: 8px;
+    font-size: .9rem; padding: 5px 0; color: var(--text);
+    border-top: 1px solid rgba(255,255,255,.04);
+  }
+  .card li:first-child { border-top: 0; }
+  .card li.todo { color: var(--muted); }
+  .card li svg { width: 14px; height: 14px; margin-top: 4px; }
+  .card li.ok svg { color: var(--done); }
+  .card li.todo svg { color: var(--faint); }
+
+  footer {
+    position: relative; z-index: 2;
+    text-align: center; color: var(--faint); font-size: .82rem;
+    padding: 0 16px 48px; background: rgba(5,8,22,.55);
+  }
+  footer .orbit { display: inline-block; width: 22px; height: 22px; vertical-align: -6px; margin-right: 6px; }
+
+  @media (max-width: 900px) {
+    .board { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="veil" id="veil"></div>
+
+  <header class="hero">
+    <div class="hero-inner" id="heroInner">
+      <h1>Barycenter</h1>
+      <p>The center everything orbits.</p>
+    </div>
+    <a class="scroll-hint" href="#progress" aria-label="Scroll to the progress board">
+      Progress
+      <span class="line"></span>
+    </a>
+  </header>
+
+  <main id="progress">
+    <div class="wrap">
+      <p class="eyebrow">Mission log</p>
+      <h2>What's built, and what's next</h2>
+      <p class="lede">Barycenter is a notes app for Windows where every note is a plain markdown file in a folder you choose. Notes are grouped with tags and connected with links, and over time they form a galaxy. It's being built in the open, one version at a time.</p>
+
+      <div class="stats" id="stats"></div>
+      <div class="board" id="board"></div>
+    </div>
+  </main>
+
+  <footer>
+    <svg class="orbit" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="32" rx="26" ry="10" fill="none" stroke="#7c8cff" stroke-width="2.5" transform="rotate(-25 32 32)"/><circle cx="32" cy="32" r="6" fill="#ffe9c7"/></svg>
+    Barycenter · <span id="updated"></span>
+  </footer>
+
+  <script src="progress.js"></script>
+  <script>
+  (function () {
+    "use strict";
+    var data = window.BARYCENTER || { milestones: [] };
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /* ── Board ─────────────────────────────────────────────── */
+    var COLS = [
+      { key: "done", label: "Done" },
+      { key: "in-progress", label: "In progress" },
+      { key: "planned", label: "Planned" }
+    ];
+    var CHECK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
+    var RING = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5"/></svg>';
+    var CHEV = '<svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>';
+
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    }
+    function parse(f) {
+      var t = String(f).trim();
+      var done = /^(✓|✔|\[x\])\s*/i.test(t);
+      return { done: done, text: t.replace(/^(✓|✔|\[x\]|\[ \])\s*/i, "") };
+    }
+
+    var total = 0, totalDone = 0;
+    var board = document.getElementById("board");
+    COLS.forEach(function (col) {
+      var ms = data.milestones.filter(function (m) { return m.status === col.key; });
+      var el = document.createElement("section");
+      el.className = "col";
+      el.setAttribute("data-status", col.key);
+      var html = '<h3><span class="dot"></span>' + col.label + '<span class="n">' + ms.length + '</span></h3>';
+      ms.forEach(function (m) {
+        var feats = (m.features || []).map(parse);
+        var d = feats.filter(function (f) { return f.done; }).length;
+        if (m.status === "done") d = feats.length; // a finished milestone counts every feature as done
+        total += feats.length; totalDone += d;
+        var pct = feats.length ? Math.round((d / feats.length) * 100) : 0;
+        var open = m.status === "in-progress" ? " open" : "";
+        html += '<details class="card hidden-in"' + open + '><summary>' +
+          '<span class="tag">' + esc(m.version) + '</span>' +
+          '<span class="title">' + esc(m.title) + '</span>' +
+          '<span class="sum">' + esc(m.summary || "") + '</span>' +
+          '<span class="count">' + d + ' / ' + feats.length + CHEV + '</span>' +
+          '<span class="bar"><i style="width:' + pct + '%"></i></span>' +
+          '</summary><ul>' +
+          feats.map(function (f) {
+            var ok = f.done || m.status === "done";
+            return '<li class="' + (ok ? "ok" : "todo") + '">' + (ok ? CHECK : RING) + '<span>' + esc(f.text) + '</span></li>';
+          }).join("") +
+          '</ul></details>';
+      });
+      el.innerHTML = html;
+      board.appendChild(el);
+    });
+
+    var pctAll = total ? Math.round((totalDone / total) * 100) : 0;
+    var count = function (s) { return data.milestones.filter(function (m) { return m.status === s; }).length; };
+    document.getElementById("stats").innerHTML =
+      '<div class="stat"><div class="k">Current version</div><div class="v">' + esc(data.currentVersion || "–") + '</div></div>' +
+      '<div class="stat"><div class="k">Milestones done</div><div class="v">' + count("done") + ' <small>of ' + data.milestones.length + '</small></div></div>' +
+      '<div class="stat"><div class="k">Features built</div><div class="v">' + totalDone + ' <small>of ' + total + '</small></div>' +
+        '<div class="meter"><i id="meter" data-w="' + pctAll + '"></i></div></div>';
+    document.getElementById("updated").textContent = data.updated ? "Last updated " + data.updated : "";
+
+    // Reveal cards and the meter as they scroll into view
+    var cards = [].slice.call(document.querySelectorAll(".card"));
+    var meter = document.getElementById("meter");
+    function reveal(el) {
+      if (el === meter) { el.style.width = el.getAttribute("data-w") + "%"; }
+      else { el.classList.remove("hidden-in"); }
+    }
+    if ("IntersectionObserver" in window && !reduceMotion) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e, i) {
+          if (e.isIntersecting) {
+            var el = e.target;
+            setTimeout(function () { reveal(el); }, i * 70);
+            io.unobserve(el);
+          }
+        });
+      }, { threshold: 0.12 });
+      cards.concat([meter]).forEach(function (c) { io.observe(c); });
+    } else {
+      cards.concat([meter]).forEach(reveal);
+    }
+
+    /* ── Sky: starfield + spiral galaxy ────────────────────── */
+    var canvas = document.getElementById("sky");
+    var ctx = canvas.getContext("2d");
+    var W, H, DPR, stars = [], galaxy = [], dust = [];
+
+    function rand(a, b) { return a + Math.random() * (b - a); }
+    function gauss() { var u = 1 - Math.random(), v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+
+    // Real stars range from blue-white to warm orange, most are near white
+    function starColour() {
+      var x = Math.random();
+      if (x < 0.55) return "235,240,255";
+      if (x < 0.75) return "200,215,255";
+      if (x < 0.9) return "255,244,225";
+      return "255,214,170";
+    }
+    var bright = [];
+
+    function build() {
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      W = window.innerWidth; H = window.innerHeight;
+      canvas.width = W * DPR; canvas.height = H * DPR;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+      var area = W * H;
+      stars = [];
+      var nStars = Math.min(900, Math.round(area / 1400));
+      for (var i = 0; i < nStars; i++) {
+        stars.push({ x: Math.random() * W, y: Math.random() * H, r: Math.pow(Math.random(), 3) * 1.5 + 0.25,
+          a: rand(0.25, 0.9), tw: rand(0.4, 2.2), ph: rand(0, 6.28), depth: rand(0.05, 0.35), c: starColour() });
+      }
+      // A few brighter stars with a soft glow, spread out like a real sky
+      bright = [];
+      var nBright = Math.max(10, Math.round(area / 40000));
+      for (var b = 0; b < nBright; b++) {
+        bright.push({ x: Math.random() * W, y: Math.random() * H, r: rand(0.9, 1.7), halo: rand(5, 11),
+          a: rand(0.6, 1), tw: rand(0.2, 0.8), ph: rand(0, 6.28), depth: rand(0.12, 0.3), c: starColour() });
+      }
+
+      // Spiral galaxy: logarithmic arms plus a bright core
+      galaxy = [];
+      var R = Math.min(W, H) * (W < 640 ? 0.62 : 0.56);
+      var arms = 3, nG = W < 640 ? 3000 : 6500;
+      for (var j = 0; j < nG; j++) {
+        var core = Math.random() < 0.22;
+        var dist, ang;
+        if (core) {
+          dist = Math.abs(gauss()) * 0.11;
+          ang = Math.random() * Math.PI * 2;
+        } else {
+          dist = Math.pow(Math.random(), 0.75);
+          var arm = j % arms;
+          ang = arm * (Math.PI * 2 / arms) + dist * 5.2 + gauss() * (0.32 - dist * 0.12);
+        }
+        var r = dist * R;
+        // colour: warm white core → violet → blue/pink edges
+        var hue, sat, light;
+        if (dist < 0.12) { hue = rand(30, 45); sat = 80; light = rand(82, 95); }
+        else if (Math.random() < 0.12) { hue = rand(320, 345); sat = 75; light = rand(68, 80); }
+        else { hue = rand(215, 265); sat = rand(60, 90); light = rand(62, 82); }
+        galaxy.push({ r: r, ang: ang, size: (core ? rand(0.5, 1.6) : Math.pow(Math.random(), 2.2) * 1.7 + 0.35),
+          col: "hsla(" + hue + "," + sat + "%," + light + "%,", a: core ? rand(0.5, 1) : rand(0.35, 0.95),
+          speed: 0.000045 / Math.max(0.18, dist) });
+      }
+      // Soft dust clouds that colour the arms
+      dust = [];
+      for (var k = 0; k < 26; k++) {
+        var dd = rand(0.12, 0.9), arm2 = k % arms;
+        dust.push({ r: dd * R, ang: arm2 * (Math.PI * 2 / arms) + dd * 5.2 + gauss() * 0.15,
+          size: R * rand(0.12, 0.28) * (1.1 - dd * 0.5), hue: Math.random() < 0.3 ? 320 : rand(225, 260),
+          speed: 0.000045 / Math.max(0.18, dd) });
+      }
+    }
+
+    var scrollY = 0, t0 = performance.now();
+    var tilt = 0.42, rot = -0.45; // view the disc at an angle
+    var veil = document.getElementById("veil");
+    var heroInner = document.getElementById("heroInner");
+
+    function draw(now) {
+      var t = (now - t0);
+      ctx.clearRect(0, 0, W, H);
+
+      // deep space background
+      var bg = ctx.createRadialGradient(W * 0.5, H * 0.5, 0, W * 0.5, H * 0.5, Math.max(W, H) * 0.8);
+      bg.addColorStop(0, "#0d1440");
+      bg.addColorStop(0.45, "#070b26");
+      bg.addColorStop(1, "#03050f");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // stars with gentle parallax and twinkle
+      for (var i = 0; i < stars.length; i++) {
+        var s = stars[i];
+        var y = (s.y - scrollY * s.depth) % H; if (y < 0) y += H;
+        var a = s.a * (0.65 + 0.35 * Math.sin(t * 0.001 * s.tw + s.ph));
+        ctx.fillStyle = "rgba(" + s.c + "," + a.toFixed(3) + ")";
+        ctx.fillRect(s.x, y, s.r, s.r);
+      }
+      for (var bi = 0; bi < bright.length; bi++) {
+        var st = bright[bi];
+        var by = (st.y - scrollY * st.depth) % H; if (by < 0) by += H;
+        var ba = st.a * (0.8 + 0.2 * Math.sin(t * 0.001 * st.tw + st.ph));
+        var hg = ctx.createRadialGradient(st.x, by, 0, st.x, by, st.halo);
+        hg.addColorStop(0, "rgba(" + st.c + "," + (ba * 0.5).toFixed(3) + ")");
+        hg.addColorStop(1, "rgba(" + st.c + ",0)");
+        ctx.fillStyle = hg;
+        ctx.fillRect(st.x - st.halo, by - st.halo, st.halo * 2, st.halo * 2);
+        ctx.fillStyle = "rgba(" + st.c + "," + ba.toFixed(3) + ")";
+        ctx.beginPath(); ctx.arc(st.x, by, st.r, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // galaxy: drifts up and fades as you scroll
+      var fade = Math.max(0, 1 - scrollY / (H * 0.95));
+      if (fade > 0.01) {
+        var cx = W / 2, cy = H / 2 - scrollY * 0.35;
+        var cosR = Math.cos(rot), sinR = Math.sin(rot);
+        ctx.globalCompositeOperation = "lighter";
+
+        for (var d = 0; d < dust.length; d++) {
+          var q = dust[d], qa = q.ang + t * q.speed;
+          var qx = Math.cos(qa) * q.r, qy = Math.sin(qa) * q.r * tilt;
+          var px = cx + qx * cosR - qy * sinR, py = cy + qx * sinR + qy * cosR;
+          var g = ctx.createRadialGradient(px, py, 0, px, py, q.size);
+          g.addColorStop(0, "hsla(" + q.hue + ",70%,60%," + (0.1 * fade).toFixed(3) + ")");
+          g.addColorStop(1, "hsla(" + q.hue + ",70%,60%,0)");
+          ctx.fillStyle = g;
+          ctx.fillRect(px - q.size, py - q.size, q.size * 2, q.size * 2);
+        }
+
+        for (var j = 0; j < galaxy.length; j++) {
+          var p = galaxy[j], an = p.ang + t * p.speed;
+          var x = Math.cos(an) * p.r, yy = Math.sin(an) * p.r * tilt;
+          var gx = cx + x * cosR - yy * sinR, gy = cy + x * sinR + yy * cosR;
+          ctx.fillStyle = p.col + (p.a * fade).toFixed(3) + ")";
+          ctx.fillRect(gx, gy, p.size, p.size);
+        }
+
+        // glowing core
+        var cr = Math.min(W, H) * 0.16;
+        var core = ctx.createRadialGradient(cx, cy, 0, cx, cy, cr);
+        core.addColorStop(0, "rgba(255,240,215," + (0.55 * fade).toFixed(3) + ")");
+        core.addColorStop(0.25, "rgba(255,200,170," + (0.18 * fade).toFixed(3) + ")");
+        core.addColorStop(1, "rgba(120,110,255,0)");
+        ctx.save();
+        ctx.translate(cx, cy); ctx.rotate(rot); ctx.scale(1, 0.7); ctx.translate(-cx, -cy);
+        ctx.fillStyle = core;
+        ctx.beginPath(); ctx.arc(cx, cy, cr, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+        ctx.globalCompositeOperation = "source-over";
+      }
+
+      if (!reduceMotion) requestAnimationFrame(draw);
+    }
+
+    function onScroll() {
+      scrollY = window.scrollY || window.pageYOffset;
+      var k = Math.min(1, scrollY / (H * 0.7));
+      heroInner.style.opacity = String(1 - k);
+      heroInner.style.transform = "translateY(" + (scrollY * 0.25) + "px) scale(" + (1 - k * 0.06) + ")";
+      veil.style.opacity = String(k);
+      if (reduceMotion) draw(performance.now());
+    }
+
+    var resizeTimer;
+    window.addEventListener("resize", function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () { build(); if (reduceMotion) draw(performance.now()); }, 150);
+    });
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    build();
+    onScroll();
+    requestAnimationFrame(draw);
+  })();
+  </script>
+</body>
+</html>
