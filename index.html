@@ -207,6 +207,33 @@
   }
   footer .orbit { display: inline-block; width: 22px; height: 22px; vertical-align: -6px; margin-right: 6px; }
 
+  /* ── Language switch ────────────────────────────────────── */
+  .lang {
+    position: fixed; top: 16px; right: 16px; z-index: 10;
+    display: flex; padding: 4px; gap: 2px;
+    background: rgba(14, 20, 52, 0.6);
+    border: 1px solid var(--panel-border);
+    border-radius: 999px;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    animation: fade 1.5s .8s both;
+  }
+  .lang button {
+    font: 500 .85rem/1 Inter, system-ui, sans-serif;
+    color: var(--muted); background: transparent;
+    border: 0; border-radius: 999px;
+    padding: 9px 14px; cursor: pointer;
+    transition: background .25s, color .25s;
+  }
+  .lang button:hover { color: var(--text); }
+  .lang button[aria-pressed="true"] {
+    color: #0a0f2c; background: linear-gradient(180deg, #ffffff, #d9d4ff);
+    box-shadow: 0 0 16px rgba(185, 168, 255, .35);
+  }
+  .lang button:focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
+  [data-i18n] { transition: opacity .25s; }
+  body.switching [data-i18n], body.switching .board, body.switching .stats { opacity: 0; }
+  .board, .stats { transition: opacity .25s; }
+
   @media (max-width: 900px) {
     .board { grid-template-columns: 1fr; }
   }
@@ -220,22 +247,27 @@
   <canvas id="sky" aria-hidden="true"></canvas>
   <div class="veil" id="veil"></div>
 
+  <div class="lang" role="group" aria-label="Language / Språk">
+    <button type="button" data-lang="en" lang="en" aria-pressed="true">English</button>
+    <button type="button" data-lang="sv" lang="sv" aria-pressed="false">Svenska</button>
+  </div>
+
   <header class="hero">
     <div class="hero-inner" id="heroInner">
       <h1>Barycenter</h1>
-      <p>The center everything orbits.</p>
+      <p data-i18n="tagline">The center everything orbits.</p>
     </div>
-    <a class="scroll-hint" href="#progress" aria-label="Scroll to the progress board">
-      Progress
+    <a class="scroll-hint" href="#progress" data-i18n-aria="scrollLabel" aria-label="Scroll to the progress board">
+      <span data-i18n="scrollHint">Progress</span>
       <span class="line"></span>
     </a>
   </header>
 
   <main id="progress">
     <div class="wrap">
-      <p class="eyebrow">Mission log</p>
-      <h2>What's built, and what's next</h2>
-      <p class="lede">Barycenter is a notes app for Windows where every note is a plain markdown file in a folder you choose. Notes are grouped with tags and connected with links, and over time they form a galaxy. It's being built in the open, one version at a time.</p>
+      <p class="eyebrow" data-i18n="eyebrow">Mission log</p>
+      <h2 data-i18n="heading">What's built, and what's next</h2>
+      <p class="lede" data-i18n="lede">Barycenter is a notes app for Windows where every note is a plain markdown file in a folder you choose. Notes are grouped with tags and connected with links, and over time they form a galaxy. It's being built in the open, one version at a time.</p>
 
       <div class="stats" id="stats"></div>
       <div class="board" id="board"></div>
@@ -254,12 +286,53 @@
     var data = window.BARYCENTER || { milestones: [] };
     var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    /* ── Words on the page, in English and Swedish ─────────── */
+    var UI = {
+      en: {
+        tagline: "The center everything orbits.",
+        scrollHint: "Progress",
+        scrollLabel: "Scroll to the progress board",
+        eyebrow: "Mission log",
+        heading: "What's built, and what's next",
+        lede: "Barycenter is a notes app for Windows where every note is a plain markdown file in a folder you choose. Notes are grouped with tags and connected with links, and over time they form a galaxy. It's being built in the open, one version at a time.",
+        done: "Done", "in-progress": "In progress", planned: "Planned",
+        currentVersion: "Current version", milestonesDone: "Milestones done", featuresBuilt: "Features built",
+        of: "of", lastUpdated: "Last updated",
+        description: "Barycenter is a personal notes app for Windows, being built in the open. Here's what's done and what's next."
+      },
+      sv: {
+        tagline: "Mittpunkten som allt kretsar kring.",
+        scrollHint: "Framsteg",
+        scrollLabel: "Scrolla ner till framstegstavlan",
+        eyebrow: "Loggbok",
+        heading: "Det som är byggt, och det som kommer",
+        lede: "Barycenter är en anteckningsapp för Windows där varje anteckning är en vanlig markdown-fil i en mapp som du själv väljer. Anteckningarna grupperas med taggar och kopplas ihop med länkar, och med tiden bildar de en galax. Appen byggs öppet, en version i taget.",
+        done: "Klart", "in-progress": "Pågår", planned: "Planerat",
+        currentVersion: "Nuvarande version", milestonesDone: "Klara etapper", featuresBuilt: "Klara funktioner",
+        of: "av", lastUpdated: "Senast uppdaterad",
+        description: "Barycenter är en personlig anteckningsapp för Windows som byggs öppet. Här syns vad som är klart och vad som kommer härnäst."
+      }
+    };
+
+    // Pick the language: ?lang=sv in the address, then the last choice, then the browser's language
+    var lang = "en";
+    try {
+      var q = new URLSearchParams(location.search).get("lang");
+      var saved = null;
+      try { saved = localStorage.getItem("barycenter-lang"); } catch (e) {}
+      if (q === "sv" || q === "en") lang = q;
+      else if (saved === "sv" || saved === "en") lang = saved;
+      else if (/^sv\b/i.test(navigator.language || "")) lang = "sv";
+    } catch (e) {}
+
+    // "English | Svenska" → the part for the current language
+    function tr(v) {
+      var parts = String(v == null ? "" : v).split(/\s+\|\s+/);
+      return (lang === "sv" && parts[1]) ? parts[1].trim() : parts[0].trim();
+    }
+
     /* ── Board ─────────────────────────────────────────────── */
-    var COLS = [
-      { key: "done", label: "Done" },
-      { key: "in-progress", label: "In progress" },
-      { key: "planned", label: "Planned" }
-    ];
+    var COLS = ["done", "in-progress", "planned"];
     var CHECK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
     var RING = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5"/></svg>';
     var CHEV = '<svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>';
@@ -272,71 +345,120 @@
     function parse(f) {
       var t = String(f).trim();
       var done = /^(✓|✔|\[x\])\s*/i.test(t);
-      return { done: done, text: t.replace(/^(✓|✔|\[x\]|\[ \])\s*/i, "") };
+      return { done: done, text: tr(t.replace(/^(✓|✔|\[x\]|\[ \])\s*/i, "")) };
     }
 
-    var total = 0, totalDone = 0;
-    var board = document.getElementById("board");
-    COLS.forEach(function (col) {
-      var ms = data.milestones.filter(function (m) { return m.status === col.key; });
-      var el = document.createElement("section");
-      el.className = "col";
-      el.setAttribute("data-status", col.key);
-      var html = '<h3><span class="dot"></span>' + col.label + '<span class="n">' + ms.length + '</span></h3>';
-      ms.forEach(function (m) {
-        var feats = (m.features || []).map(parse);
-        var d = feats.filter(function (f) { return f.done; }).length;
-        if (m.status === "done") d = feats.length; // a finished milestone counts every feature as done
-        total += feats.length; totalDone += d;
-        var pct = feats.length ? Math.round((d / feats.length) * 100) : 0;
-        var open = m.status === "in-progress" ? " open" : "";
-        html += '<details class="card hidden-in"' + open + '><summary>' +
-          '<span class="tag">' + esc(m.version) + '</span>' +
-          '<span class="title">' + esc(m.title) + '</span>' +
-          '<span class="sum">' + esc(m.summary || "") + '</span>' +
-          '<span class="count">' + d + ' / ' + feats.length + CHEV + '</span>' +
-          '<span class="bar"><i style="width:' + pct + '%"></i></span>' +
-          '</summary><ul>' +
-          feats.map(function (f) {
-            var ok = f.done || m.status === "done";
-            return '<li class="' + (ok ? "ok" : "todo") + '">' + (ok ? CHECK : RING) + '<span>' + esc(f.text) + '</span></li>';
-          }).join("") +
-          '</ul></details>';
+    var firstRender = true, io = null;
+
+    function render() {
+      var T = UI[lang];
+      document.documentElement.lang = lang;
+      var md = document.querySelector('meta[name="description"]');
+      if (md) md.setAttribute("content", T.description);
+      [].forEach.call(document.querySelectorAll("[data-i18n]"), function (el) {
+        el.textContent = T[el.getAttribute("data-i18n")];
       });
-      el.innerHTML = html;
-      board.appendChild(el);
+      [].forEach.call(document.querySelectorAll("[data-i18n-aria]"), function (el) {
+        el.setAttribute("aria-label", T[el.getAttribute("data-i18n-aria")]);
+      });
+      [].forEach.call(document.querySelectorAll(".lang button"), function (b) {
+        b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === lang));
+      });
+
+      // remember which cards were open, so switching language keeps them as they were
+      var openState = {};
+      [].forEach.call(document.querySelectorAll(".card"), function (c, i) { openState[i] = c.open; });
+
+      var total = 0, totalDone = 0, idx = 0;
+      var board = document.getElementById("board");
+      board.innerHTML = "";
+      var hidden = firstRender && !reduceMotion && ("IntersectionObserver" in window) ? " hidden-in" : "";
+      COLS.forEach(function (key) {
+        var ms = data.milestones.filter(function (m) { return m.status === key; });
+        var el = document.createElement("section");
+        el.className = "col";
+        el.setAttribute("data-status", key);
+        var html = '<h3><span class="dot"></span>' + esc(T[key]) + '<span class="n">' + ms.length + '</span></h3>';
+        ms.forEach(function (m) {
+          var feats = (m.features || []).map(parse);
+          var d = feats.filter(function (f) { return f.done; }).length;
+          if (m.status === "done") d = feats.length; // a finished milestone counts every feature as done
+          total += feats.length; totalDone += d;
+          var pct = feats.length ? Math.round((d / feats.length) * 100) : 0;
+          var isOpen = firstRender ? m.status === "in-progress" : !!openState[idx];
+          idx++;
+          html += '<details class="card' + hidden + '"' + (isOpen ? " open" : "") + '><summary>' +
+            '<span class="tag">' + esc(tr(m.version)) + '</span>' +
+            '<span class="title">' + esc(tr(m.title)) + '</span>' +
+            '<span class="sum">' + esc(tr(m.summary)) + '</span>' +
+            '<span class="count">' + d + ' / ' + feats.length + CHEV + '</span>' +
+            '<span class="bar"><i style="width:' + pct + '%"></i></span>' +
+            '</summary><ul>' +
+            feats.map(function (f) {
+              var ok = f.done || m.status === "done";
+              return '<li class="' + (ok ? "ok" : "todo") + '">' + (ok ? CHECK : RING) + '<span>' + esc(f.text) + '</span></li>';
+            }).join("") +
+            '</ul></details>';
+        });
+        el.innerHTML = html;
+        board.appendChild(el);
+      });
+
+      var pctAll = total ? Math.round((totalDone / total) * 100) : 0;
+      var count = function (s) { return data.milestones.filter(function (m) { return m.status === s; }).length; };
+      document.getElementById("stats").innerHTML =
+        '<div class="stat"><div class="k">' + esc(T.currentVersion) + '</div><div class="v">' + esc(data.currentVersion || "–") + '</div></div>' +
+        '<div class="stat"><div class="k">' + esc(T.milestonesDone) + '</div><div class="v">' + count("done") + ' <small>' + esc(T.of) + ' ' + data.milestones.length + '</small></div></div>' +
+        '<div class="stat"><div class="k">' + esc(T.featuresBuilt) + '</div><div class="v">' + totalDone + ' <small>' + esc(T.of) + ' ' + total + '</small></div>' +
+          '<div class="meter"><i id="meter" data-w="' + pctAll + '"' + (firstRender ? "" : ' style="width:' + pctAll + '%"') + '></i></div></div>';
+      document.getElementById("updated").textContent = data.updated ? T.lastUpdated + " " + tr(data.updated) : "";
+
+      if (firstRender) revealOnScroll();
+      firstRender = false;
+    }
+
+    // Reveal cards and the meter as they scroll into view (first load only)
+    function revealOnScroll() {
+      var cards = [].slice.call(document.querySelectorAll(".card"));
+      var meter = document.getElementById("meter");
+      var reveal = function (el) {
+        if (el.id === "meter") { el.style.width = el.getAttribute("data-w") + "%"; }
+        else { el.classList.remove("hidden-in"); }
+      };
+      if ("IntersectionObserver" in window && !reduceMotion) {
+        io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e, i) {
+            if (e.isIntersecting) {
+              var el = e.target;
+              setTimeout(function () { reveal(el); }, i * 70);
+              io.unobserve(el);
+            }
+          });
+        }, { threshold: 0.12 });
+        cards.concat([meter]).forEach(function (c) { io.observe(c); });
+      } else {
+        cards.concat([meter]).forEach(reveal);
+      }
+    }
+
+    function setLang(next) {
+      if (next === lang) return;
+      lang = next;
+      try { localStorage.setItem("barycenter-lang", lang); } catch (e) {}
+      if (io) { io.disconnect(); io = null; }
+      if (reduceMotion) { render(); return; }
+      document.body.classList.add("switching");
+      setTimeout(function () {
+        render();
+        document.body.classList.remove("switching");
+      }, 250);
+    }
+    [].forEach.call(document.querySelectorAll(".lang button"), function (b) {
+      b.addEventListener("click", function () { setLang(b.getAttribute("data-lang")); });
     });
 
-    var pctAll = total ? Math.round((totalDone / total) * 100) : 0;
-    var count = function (s) { return data.milestones.filter(function (m) { return m.status === s; }).length; };
-    document.getElementById("stats").innerHTML =
-      '<div class="stat"><div class="k">Current version</div><div class="v">' + esc(data.currentVersion || "–") + '</div></div>' +
-      '<div class="stat"><div class="k">Milestones done</div><div class="v">' + count("done") + ' <small>of ' + data.milestones.length + '</small></div></div>' +
-      '<div class="stat"><div class="k">Features built</div><div class="v">' + totalDone + ' <small>of ' + total + '</small></div>' +
-        '<div class="meter"><i id="meter" data-w="' + pctAll + '"></i></div></div>';
-    document.getElementById("updated").textContent = data.updated ? "Last updated " + data.updated : "";
+    render();
 
-    // Reveal cards and the meter as they scroll into view
-    var cards = [].slice.call(document.querySelectorAll(".card"));
-    var meter = document.getElementById("meter");
-    function reveal(el) {
-      if (el === meter) { el.style.width = el.getAttribute("data-w") + "%"; }
-      else { el.classList.remove("hidden-in"); }
-    }
-    if ("IntersectionObserver" in window && !reduceMotion) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e, i) {
-          if (e.isIntersecting) {
-            var el = e.target;
-            setTimeout(function () { reveal(el); }, i * 70);
-            io.unobserve(el);
-          }
-        });
-      }, { threshold: 0.12 });
-      cards.concat([meter]).forEach(function (c) { io.observe(c); });
-    } else {
-      cards.concat([meter]).forEach(reveal);
-    }
 
     /* ── Sky: starfield + spiral galaxy ────────────────────── */
     var canvas = document.getElementById("sky");

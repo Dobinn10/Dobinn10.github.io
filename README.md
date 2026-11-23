@@ -12,6 +12,9 @@ Open `progress.js` on GitHub, click the pencil icon, and:
 - Move a milestone to another column by changing its `status` to `"done"`, `"in-progress"` or `"planned"`.
 - Mark a single feature as built by putting `✓ ` in front of it.
 - Change `updated:` to today's date.
+- Swedish: put the Swedish text after ` | ` on the same line, like `"✓ Tables you can tab through | Tabeller där Tab hoppar mellan cellerna"`.
+
+The English / Svenska switch sits in the top-right corner. To send someone the Swedish version directly, use `https://dobinn10.github.io/?lang=sv`.
 
 Click **Commit changes**. The site updates by itself within a minute or two.
 
