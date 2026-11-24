@@ -7,7 +7,8 @@
 //   • Tick a single feature by putting  ✓  in front of it, e.g.
 //       "✓ Tables you can tab through"
 //     (features without ✓ show as not done yet)
-//   • Change `updated` to today's date.
+//   • Change `updated` to today's date, and `currentVersion` to the newest
+//     version number (shown on the front page and in the board's stats).
 //   • Swedish: write the Swedish text after a " | " on the same line, e.g.
 //       "✓ Tables you can tab through | Tabeller där Tab hoppar mellan cellerna"
 //     (if there's no " | ", the English text is shown in Swedish too)
@@ -17,7 +18,7 @@
 
 window.BARYCENTER = {
   updated: "25 November 2026 | 25 november 2026",
-  currentVersion: "0.4.5",
+  currentVersion: "0.4.6",
 
   milestones: [
     // ── Done ─────────────────────────────────────────────────

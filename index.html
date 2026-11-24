@@ -87,6 +87,19 @@
     letter-spacing: 0.04em;
     animation: rise 1.6s .35s cubic-bezier(.2,.7,.2,1) both;
   }
+  .hero .version {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 1.4rem; padding: 6px 14px;
+    font-size: .8rem; letter-spacing: .06em; color: var(--muted);
+    background: rgba(255, 250, 242, 0.55);
+    border: 1px solid var(--panel-border); border-radius: 999px;
+    animation: fade 1.6s .9s both;
+  }
+  .hero .version:empty { display: none; }
+  .hero .version::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--progress); box-shadow: 0 0 8px var(--progress);
+  }
   .scroll-hint {
     position: absolute; left: 50%; bottom: 32px;
     transform: translateX(-50%);
@@ -264,6 +277,7 @@
       <img class="logo" src="logo.svg" alt="" width="150" height="150">
       <h1>Barycenter</h1>
       <p data-i18n="tagline">The center everything orbits.</p>
+      <span class="version" id="heroVersion"></span>
     </div>
     <a class="scroll-hint" href="#progress" data-i18n-aria="scrollLabel" aria-label="Scroll to the progress board">
       <span data-i18n="scrollHint">Progress</span>
@@ -298,6 +312,7 @@
     var UI = {
       en: {
         tagline: "The center everything orbits.",
+        nowOn: "Currently on version",
         scrollHint: "Progress",
         scrollLabel: "Scroll to the progress board",
         eyebrow: "Mission log",
@@ -310,6 +325,7 @@
       },
       sv: {
         tagline: "Mittpunkten som allt kretsar kring.",
+        nowOn: "Just nu på version",
         scrollHint: "Framsteg",
         scrollLabel: "Scrolla ner till framstegstavlan",
         eyebrow: "Loggbok",
@@ -419,6 +435,7 @@
         '<div class="stat"><div class="k">' + esc(T.milestonesDone) + '</div><div class="v">' + count("done") + ' <small>' + esc(T.of) + ' ' + data.milestones.length + '</small></div></div>' +
         '<div class="stat"><div class="k">' + esc(T.featuresBuilt) + '</div><div class="v">' + totalDone + ' <small>' + esc(T.of) + ' ' + total + '</small></div>' +
           '<div class="meter"><i id="meter" data-w="' + pctAll + '"' + (firstRender ? "" : ' style="width:' + pctAll + '%"') + '></i></div></div>';
+      document.getElementById("heroVersion").textContent = data.currentVersion ? T.nowOn + " " + data.currentVersion : "";
       document.getElementById("updated").textContent = data.updated ? T.lastUpdated + " " + tr(data.updated) : "";
 
       if (firstRender) revealOnScroll();
