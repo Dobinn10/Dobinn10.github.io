@@ -45,7 +45,7 @@
   }
   .veil {
     position: fixed; inset: 0; z-index: 1; pointer-events: none;
-    background: radial-gradient(ellipse at 50% 120%, rgba(243,230,209,0) 0%, rgba(243,230,209,0.15) 60%);
+    background: radial-gradient(ellipse at 50% 120%, rgba(243,230,209,0) 0%, rgba(243,230,209,0.2) 60%);
     opacity: 0; transition: opacity .2s linear;
   }
 
@@ -57,14 +57,7 @@
     text-align: center;
     padding: 0 16px;
   }
-  .hero-inner { will-change: transform, opacity; position: relative; }
-  /* a soft sandy glow behind the name, so it reads clearly over the galaxy */
-  .hero-inner::before {
-    content: ""; position: absolute; z-index: -1;
-    left: 0; right: 0; top: 52%; height: 46%;
-    background: radial-gradient(ellipse at center, rgba(251,243,230,.85) 0%, rgba(251,243,230,.55) 45%, rgba(251,243,230,0) 72%);
-    pointer-events: none;
-  }
+  .hero-inner { will-change: transform, opacity; }
   .hero h1 {
     margin: 0;
     font-family: Sora, Inter, sans-serif;
@@ -116,7 +109,7 @@
   main {
     position: relative; z-index: 2;
     padding: 12vh 16px 10vh;
-    background: linear-gradient(180deg, rgba(243,230,209,0) 0%, rgba(246,236,220,.18) 14vh, rgba(246,236,220,.22) 100%);
+    background: linear-gradient(180deg, rgba(243,230,209,0) 0%, rgba(246,236,220,.25) 14vh, rgba(246,236,220,.3) 100%);
   }
   .wrap { max-width: 1180px; margin: 0 auto; }
   .eyebrow {
@@ -217,7 +210,7 @@
   footer {
     position: relative; z-index: 2;
     text-align: center; color: var(--faint); font-size: .82rem;
-    padding: 0 16px 48px; background: rgba(246,236,220,.22);
+    padding: 0 16px 48px; background: rgba(246,236,220,.3);
   }
   footer .orbit { display: inline-block; width: 26px; height: 26px; vertical-align: -8px; margin-right: 6px; }
 
@@ -500,59 +493,54 @@
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
 
       var area = W * H;
+      // Small four-pointed sparkles, most of them tiny, a few larger
       stars = [];
-      var nStars = Math.min(1300, Math.round(area / 1000));
+      var nStars = Math.min(260, Math.round(area / 6500));
       for (var i = 0; i < nStars; i++) {
-        stars.push({ x: Math.random() * W, y: Math.random() * H, r: Math.pow(Math.random(), 3) * 1.8 + 0.45,
-          a: rand(0.3, 0.85), tw: rand(0.4, 2.2), ph: rand(0, 6.28), depth: rand(0.05, 0.35), c: starColour() });
+        stars.push({ x: Math.random() * W, y: Math.random() * H, len: 1.6 + Math.pow(Math.random(), 2.5) * 4.4,
+          a: rand(0.35, 0.8), tw: rand(0.4, 1.8), ph: rand(0, 6.28), depth: rand(0.05, 0.35), c: starColour() });
       }
-      // A few brighter stars with a soft glow, spread out like a real sky
+      // A few brighter sparkles with a soft glow, spread out like a real sky
       bright = [];
-      var nBright = Math.max(14, Math.round(area / 22000));
+      var nBright = Math.max(8, Math.round(area / 70000));
       for (var b = 0; b < nBright; b++) {
-        bright.push({ x: Math.random() * W, y: Math.random() * H, r: rand(1, 1.9), halo: rand(7, 15),
-          a: rand(0.65, 0.95), tw: rand(0.2, 0.8), ph: rand(0, 6.28), depth: rand(0.12, 0.3),
+        bright.push({ x: Math.random() * W, y: Math.random() * H, len: rand(6, 10), halo: rand(7, 12),
+          a: rand(0.6, 0.9), tw: rand(0.2, 0.8), ph: rand(0, 6.28), depth: rand(0.12, 0.3),
           c: Math.random() < 0.6 ? "208,102,47" : "156,59,31" });
       }
 
-      // Spiral galaxy: two clear arms winding out from the logo, a dusty disc and a glowing bulge
+      // Spiral galaxy: logarithmic arms plus a bright core
       galaxy = [];
-      var R = Math.min(W, H) * (W < 640 ? 0.68 : 0.56);
-      var arms = 2, nG = W < 640 ? 5000 : 10000;
+      var R = Math.min(W, H) * (W < 640 ? 0.62 : 0.56);
+      var arms = 3, nG = W < 640 ? 3000 : 6500;
       for (var j = 0; j < nG; j++) {
-        var kind = Math.random(), dist, ang;
-        if (kind < 0.12) {            // bulge hugging the logo
-          dist = 0.05 + Math.abs(gauss()) * 0.09;
+        var core = false;
+        var dist, ang;
+        if (core) {
+          dist = Math.abs(gauss()) * 0.11;
           ang = Math.random() * Math.PI * 2;
-        } else if (kind < 0.3) {      // faint disc between the arms
-          dist = 0.1 + 0.9 * Math.sqrt(Math.random());
-          ang = Math.random() * Math.PI * 2;
-        } else {                      // the arms
-          dist = 0.1 + 0.9 * Math.pow(Math.random(), 0.9);
+        } else {
+          dist = 0.13 + 0.87 * Math.pow(Math.random(), 0.8);
           var arm = j % arms;
-          ang = arm * Math.PI + dist * 6.2 + gauss() * (0.2 - dist * 0.08);
+          ang = arm * (Math.PI * 2 / arms) + dist * 5.2 + gauss() * (0.32 - dist * 0.12);
         }
-        var r = dist * R * (1 + gauss() * 0.03);
-        // colour: deep rust near the centre → terracotta → peach at the edges
+        var r = dist * R;
+        // colour: deep rust core → terracotta arms → peach sand at the edges
         var hue, sat, light;
-        if (Math.random() < 0.08) { hue = rand(24, 32); sat = rand(80, 92); light = rand(60, 70); }
-        else if (dist < 0.35) { hue = rand(10, 16); sat = rand(62, 75); light = rand(24, 36); }
-        else if (dist < 0.7) { hue = rand(15, 21); sat = rand(65, 80); light = rand(38, 50); }
-        else { hue = rand(20, 28); sat = rand(72, 86); light = rand(50, 62); }
-        var inArm = kind >= 0.3;
-        galaxy.push({ r: r, ang: ang,
-          size: Math.pow(Math.random(), 2) * (inArm ? 2.2 : 1.4) + 0.5,
-          col: "hsla(" + hue + "," + sat + "%," + light + "%,",
-          a: (inArm ? rand(0.45, 0.95) : rand(0.2, 0.55)) * (1.1 - dist * 0.3),
-          speed: 0.00004 / Math.max(0.2, dist) });
+        if (dist < 0.12) { hue = rand(10, 18); sat = rand(60, 72); light = rand(22, 34); }
+        else if (Math.random() < 0.18) { hue = rand(22, 30); sat = rand(70, 85); light = rand(58, 68); }
+        else { hue = rand(14, 22); sat = rand(55, 72); light = rand(32, 48) + dist * 10; }
+        galaxy.push({ r: r, ang: ang, size: (core ? rand(0.5, 1.6) : Math.pow(Math.random(), 2.2) * 1.7 + 0.35),
+          col: "hsla(" + hue + "," + sat + "%," + light + "%,", a: Math.min(1, rand(0.22, 0.7) * (1.15 - dist * 0.4) * 1.1),
+          speed: 0.000045 / Math.max(0.18, dist) });
       }
-      // Glowing dust along the arms, so the spiral reads from far away
+      // Soft dust clouds that colour the arms
       dust = [];
-      for (var k = 0; k < 80; k++) {
-        var dd = rand(0.12, 0.95), arm2 = k % arms;
-        dust.push({ r: dd * R, ang: arm2 * Math.PI + dd * 6.2 + gauss() * 0.08,
-          size: R * rand(0.07, 0.15) * (1.15 - dd * 0.4), hue: rand(16, 26),
-          speed: 0.00004 / Math.max(0.2, dd) });
+      for (var k = 0; k < 26; k++) {
+        var dd = rand(0.12, 0.9), arm2 = k % arms;
+        dust.push({ r: dd * R, ang: arm2 * (Math.PI * 2 / arms) + dd * 5.2 + gauss() * 0.15,
+          size: R * rand(0.2, 0.36) * (1.1 - dd * 0.5), hue: rand(16, 28),
+          speed: 0.000045 / Math.max(0.18, dd) });
       }
     }
 
@@ -566,9 +554,21 @@
         if (r.height) galaxyY = r.top + (window.scrollY || 0) + r.height / 2;
       }
     }
-    var tilt = 0.56, rot = -0.45; // view the disc at an angle
+    var tilt = 0.42, rot = -0.45; // view the disc at an angle
     var veil = document.getElementById("veil");
     var heroInner = document.getElementById("heroInner");
+
+    // A four-pointed star: thin rays that curve in to a small bright centre
+    function sparkle(x, y, len) {
+      var w = len * 0.22;
+      ctx.beginPath();
+      ctx.moveTo(x, y - len);
+      ctx.quadraticCurveTo(x + w * 0.25, y - w * 0.25, x + len, y);
+      ctx.quadraticCurveTo(x + w * 0.25, y + w * 0.25, x, y + len);
+      ctx.quadraticCurveTo(x - w * 0.25, y + w * 0.25, x - len, y);
+      ctx.quadraticCurveTo(x - w * 0.25, y - w * 0.25, x, y - len);
+      ctx.fill();
+    }
 
     function draw(now) {
       var t = (now - t0);
@@ -586,9 +586,9 @@
       for (var i = 0; i < stars.length; i++) {
         var s = stars[i];
         var y = (s.y - scrollY * s.depth) % H; if (y < 0) y += H;
-        var a = s.a * (0.65 + 0.35 * Math.sin(t * 0.001 * s.tw + s.ph));
-        ctx.fillStyle = "rgba(" + s.c + "," + a.toFixed(3) + ")";
-        ctx.fillRect(s.x, y, s.r, s.r);
+        var tw = Math.sin(t * 0.001 * s.tw + s.ph);
+        ctx.fillStyle = "rgba(" + s.c + "," + (s.a * (0.7 + 0.3 * tw)).toFixed(3) + ")";
+        sparkle(s.x, y, s.len * (0.9 + 0.1 * tw));
       }
       for (var bi = 0; bi < bright.length; bi++) {
         var st = bright[bi];
@@ -600,7 +600,7 @@
         ctx.fillStyle = hg;
         ctx.fillRect(st.x - st.halo, by - st.halo, st.halo * 2, st.halo * 2);
         ctx.fillStyle = "rgba(" + st.c + "," + ba.toFixed(3) + ")";
-        ctx.beginPath(); ctx.arc(st.x, by, st.r, 0, Math.PI * 2); ctx.fill();
+        sparkle(st.x, by, st.len * (0.92 + 0.08 * Math.sin(t * 0.001 * st.tw + st.ph)));
       }
 
       // galaxy: drifts up and fades as you scroll
@@ -615,8 +615,8 @@
           var qx = Math.cos(qa) * q.r, qy = Math.sin(qa) * q.r * tilt;
           var px = cx + qx * cosR - qy * sinR, py = cy + qx * sinR + qy * cosR;
           var g = ctx.createRadialGradient(px, py, 0, px, py, q.size);
-          g.addColorStop(0, "hsla(" + q.hue + ",80%,62%," + (0.2 * fade).toFixed(3) + ")");
-          g.addColorStop(1, "hsla(" + q.hue + ",80%,62%,0)");
+          g.addColorStop(0, "hsla(" + q.hue + ",75%,66%," + (0.1 * fade).toFixed(3) + ")");
+          g.addColorStop(1, "hsla(" + q.hue + ",75%,62%,0)");
           ctx.fillStyle = g;
           ctx.fillRect(px - q.size, py - q.size, q.size * 2, q.size * 2);
         }
@@ -630,10 +630,10 @@
         }
 
         // glowing core
-        var cr = Math.min(W, H) * 0.3;
+        var cr = Math.min(W, H) * 0.22;
         var core = ctx.createRadialGradient(cx, cy, 0, cx, cy, cr);
-        core.addColorStop(0, "rgba(232,140,85," + (0.6 * fade).toFixed(3) + ")");
-        core.addColorStop(0.4, "rgba(242,166,110," + (0.28 * fade).toFixed(3) + ")");
+        core.addColorStop(0, "rgba(242,166,110," + (0.44 * fade).toFixed(3) + ")");
+        core.addColorStop(0.45, "rgba(242,166,110," + (0.18 * fade).toFixed(3) + ")");
         core.addColorStop(1, "rgba(242,166,110,0)");
         ctx.save();
         ctx.translate(cx, cy); ctx.rotate(rot); ctx.scale(1, 0.7); ctx.translate(-cx, -cy);
