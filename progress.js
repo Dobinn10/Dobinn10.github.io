@@ -16,8 +16,8 @@
 // ─────────────────────────────────────────────────────────────
 
 window.BARYCENTER = {
-  updated: "24 November 2026 | 24 november 2026",
-  currentVersion: "0.3.6",
+  updated: "25 November 2026 | 25 november 2026",
+  currentVersion: "0.4.5",
 
   milestones: [
     // ── Done ─────────────────────────────────────────────────
@@ -65,15 +65,16 @@ window.BARYCENTER = {
         "✓ Backlinks: see which notes link to the one you're reading | Bakåtlänkar: se vilka anteckningar som länkar till den du läser",
         "✓ Select several notes or tags and act on them together | Markera flera anteckningar eller taggar och hantera dem på en gång",
         "✓ Note width: narrow, medium or wide | Anteckningsbredd: smal, mellan eller bred",
+        "✓ The Ringed B logo as the app's icon | Den ringade B-logotypen som appens ikon",
+        "✓ Sandstone colour scheme, the new default | Färgtemat Sandstone, det nya standardtemat",
       ],
     },
 
-    // ── In progress ──────────────────────────────────────────
     {
-      status: "in-progress",
-      version: "v0.3.x",
+      status: "done",
+      version: "v0.3.1–0.3.10",
       title: "Fine-tuning and extras | Finjustering och extra",
-      summary: "Fixes and small extras from testing, one round at a time. | Rättningar och små extrafunktioner efter testning, en omgång i taget.",
+      summary: "Ten rounds of fixes and small extras from testing. | Tio omgångar med rättningar och små extrafunktioner efter testning.",
       features: [
         "✓ Tags that start with a number | Taggar som börjar med en siffra",
         "✓ Merge several tags into one | Slå ihop flera taggar till en",
@@ -88,27 +89,60 @@ window.BARYCENTER = {
         "✓ Duplicate a note | Duplicera en anteckning",
         "✓ Slim scrollbars in the colour scheme's colours | Smala rullningslister i färgtemats färger",
         "✓ Smoother keyboard moves in the sidebar | Smidigare tangentbordsstyrning i sidofältet",
+        "✓ Scrollbars fade away when you stop scrolling | Rullningslister som tonar bort när du slutar rulla",
+        "✓ The keyboard works again right after menus and windows close | Tangentbordet fungerar direkt igen när menyer och fönster stängs",
       ],
     },
+
+    // ── In progress ──────────────────────────────────────────
     {
       status: "in-progress",
-      version: "v0.4",
-      title: "Ribbon, shortcuts and view modes | Menyband, kortkommandon och visningslägen",
-      summary: "Everything one click or one shortcut away. | Allt bara ett klick eller ett kortkommando bort.",
+      version: "v0.4 · Phase 1 | v0.4 · Fas 1",
+      title: "Ribbon and shortcuts | Menyband och kortkommandon",
+      summary: "Everything one click or one shortcut away. Built, now being fine-tuned. | Allt bara ett klick eller ett kortkommando bort. Klart och finjusteras nu.",
       features: [
-        "Ribbon at the top like Word, hidden with Ctrl+F1 | Menyband högst upp som i Word, döljs med Ctrl+F1",
-        "A shortcut for every action, with Alt letter hints | Ett kortkommando för varje funktion, med bokstavstips när du trycker Alt",
-        "Command search with Ctrl+Shift+P | Sök bland kommandon med Ctrl+Shift+P",
-        "Three view modes: Source, Live preview and Reading | Tre visningslägen: källkod, direktvisning och läsläge",
-        "A small toolbar next to selected text | Ett litet verktygsfält bredvid markerad text",
-        "Text size and alignment | Textstorlek och justering",
-        "Built-in manual with every shortcut (F1) | Inbyggd manual med alla kortkommandon (F1)",
-        "The Ringed B logo as the app's icon | Den ringade B-logotypen som appens ikon",
-        "Sandstone colour scheme, the new default | Färgtemat Sandstone, det nya standardtemat",
+        "✓ Ribbon at the top like Word, with Home, Insert and View tabs | Menyband högst upp som i Word, med flikarna Start, Infoga och Visa",
+        "✓ Hide the ribbon with Ctrl+F1, from the View tab or in settings | Dölj menybandet med Ctrl+F1, från fliken Visa eller i inställningarna",
+        "✓ A shortcut for every button, shown when you hover over it | Ett kortkommando för varje knapp, som visas när du håller muspekaren över den",
+        "✓ Command search with Ctrl+Shift+P | Sök bland kommandon med Ctrl+Shift+P",
+        "✓ Alt key tips like Word (Alt, H, 1 for bold) | Bokstavstips med Alt som i Word (Alt, H, 1 för fetstil)",
+        "✓ Bold, italic and more across several lines or list items | Fetstil, kursiv med mera över flera rader eller listpunkter",
+        "✓ Smoother checkboxes, quotes and find bar | Smidigare kryssrutor, citat och sökfält",
       ],
     },
 
     // ── Planned ──────────────────────────────────────────────
+    {
+      status: "planned",
+      version: "v0.4 · Phase 2 | v0.4 · Fas 2",
+      title: "View modes | Visningslägen",
+      summary: "Choose how a note looks while you work. | Välj hur en anteckning ser ut medan du arbetar.",
+      features: [
+        "Three view modes: Source, Live preview and Reading | Tre visningslägen: källkod, direktvisning och läsläge",
+        "Switch between them from the View tab | Växla mellan dem från fliken Visa",
+      ],
+    },
+    {
+      status: "planned",
+      version: "v0.4 · Phase 3 | v0.4 · Fas 3",
+      title: "Formatting selected text | Formatera markerad text",
+      summary: "Quick formatting right where you select. | Snabb formatering precis där du markerar.",
+      features: [
+        "A small toolbar next to selected text | Ett litet verktygsfält bredvid markerad text",
+        "Text size for selected words | Textstorlek för markerade ord",
+        "Align text left, centre or right | Justera text till vänster, mitten eller höger",
+      ],
+    },
+    {
+      status: "planned",
+      version: "v0.4 · Phase 4 | v0.4 · Fas 4",
+      title: "Learning the keys | Lär dig tangenterna",
+      summary: "A built-in manual for everything Barycenter can do. | En inbyggd manual för allt Barycenter kan.",
+      features: [
+        "Manual with every shortcut, opened with F1 | Manual med alla kortkommandon, öppnas med F1",
+        "A tidy list of the most useful shortcuts on the start screen | En prydlig lista med de mest användbara kortkommandona på startskärmen",
+      ],
+    },
     {
       status: "planned",
       version: "Writing | Skrivande",
