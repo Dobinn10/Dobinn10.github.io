@@ -16,8 +16,8 @@
 // ─────────────────────────────────────────────────────────────
 
 window.BARYCENTER = {
-  updated: "23 November 2026 | 23 november 2026",
-  currentVersion: "0.3.2",
+  updated: "24 November 2026 | 24 november 2026",
+  currentVersion: "0.3.5",
 
   milestones: [
     // ── Done ─────────────────────────────────────────────────
@@ -72,14 +72,20 @@ window.BARYCENTER = {
     {
       status: "in-progress",
       version: "v0.3.x",
-      title: "Fine-tuning tags | Finjustering av taggar",
-      summary: "Small fixes from testing, one round at a time. | Små rättningar efter testning, en omgång i taget.",
+      title: "Fine-tuning and extras | Finjustering och extra",
+      summary: "Fixes and small extras from testing, one round at a time. | Rättningar och små extrafunktioner efter testning, en omgång i taget.",
       features: [
         "✓ Tags that start with a number | Taggar som börjar med en siffra",
         "✓ Merge several tags into one | Slå ihop flera taggar till en",
         "✓ Rename the notes folder | Byt namn på mappen med anteckningar",
-        "Check-in history shows mood and energy, not just answers | Tidigare incheckningar visar humör och energi, inte bara svaren",
-        "Sleep hours only accept sensible values | Antal sovtimmar tar bara emot rimliga värden",
+        "✓ Check-in history shows mood and energy, not just answers | Tidigare incheckningar visar humör och energi, inte bara svaren",
+        "✓ Sleep hours only accept sensible values | Antal sovtimmar tar bara emot rimliga värden",
+        "✓ Recycle Bin inside the app | Papperskorg inne i appen",
+        "✓ Sidebar you can resize or hide (Ctrl+\\) | Sidofält som går att göra bredare, smalare eller dölja (Ctrl+\\)",
+        "✓ Keyboard control in the sidebar: arrow keys, Enter, F2 and Delete | Styr sidofältet med tangentbordet: piltangenter, Enter, F2 och Delete",
+        "✓ Undo notice after deleting notes or changing tags | Ångra-ruta efter att du raderat anteckningar eller ändrat taggar",
+        "✓ New colour schemes Sage and Nebula, with matching headings | Nya färgteman, Sage och Nebula, med rubriker i matchande färger",
+        "✓ Duplicate a note | Duplicera en anteckning",
       ],
     },
     {
@@ -95,6 +101,8 @@ window.BARYCENTER = {
         "A small toolbar next to selected text | Ett litet verktygsfält bredvid markerad text",
         "Text size and alignment | Textstorlek och justering",
         "Built-in manual with every shortcut (F1) | Inbyggd manual med alla kortkommandon (F1)",
+        "The Ringed B logo as the app's icon | Den ringade B-logotypen som appens ikon",
+        "Sandstone colour scheme, the new default | Färgtemat Sandstone, det nya standardtemat",
       ],
     },
 
@@ -111,6 +119,17 @@ window.BARYCENTER = {
         "Links and footnotes inside the text | Länkar och fotnoter direkt i texten",
         "Web previews and YouTube embeds | Förhandsvisning av webbsidor och inbäddade YouTube-videor",
         "Math with LaTeX, lined up like Word's equations | Matematik med LaTeX, uppställd som ekvationer i Word",
+      ],
+    },
+    {
+      status: "planned",
+      version: "Overview | Översikt",
+      title: "Card overview | Kortöversikt",
+      summary: "A new start screen with tags and notes as cards. | En ny startskärm med taggar och anteckningar som kort.",
+      features: [
+        "Tag cards with icon, colour and note count | Taggkort med ikon, färg och antal anteckningar",
+        "Note cards with title, preview, tags and date | Anteckningskort med titel, förhandsvisning, taggar och datum",
+        "A Home button in the sidebar | En hemknapp i sidofältet",
       ],
     },
     {
@@ -133,6 +152,7 @@ window.BARYCENTER = {
         "Interactive chart over 7, 30 or 90 days | Interaktivt diagram över 7, 30 eller 90 dagar",
         "Track your own metrics in the check-in | Följ dina egna mätvärden i incheckningen",
         "Switch each line on and off | Slå på och av varje linje",
+        "Colours that show how good a value is | Färger som visar hur bra ett värde är",
       ],
     },
     {
