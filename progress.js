@@ -17,7 +17,7 @@
 
 window.BARYCENTER = {
   updated: "24 November 2026 | 24 november 2026",
-  currentVersion: "0.3.5",
+  currentVersion: "0.3.6",
 
   milestones: [
     // ── Done ─────────────────────────────────────────────────
@@ -86,6 +86,8 @@ window.BARYCENTER = {
         "✓ Undo notice after deleting notes or changing tags | Ångra-ruta efter att du raderat anteckningar eller ändrat taggar",
         "✓ New colour schemes Sage and Nebula, with matching headings | Nya färgteman, Sage och Nebula, med rubriker i matchande färger",
         "✓ Duplicate a note | Duplicera en anteckning",
+        "✓ Slim scrollbars in the colour scheme's colours | Smala rullningslister i färgtemats färger",
+        "✓ Smoother keyboard moves in the sidebar | Smidigare tangentbordsstyrning i sidofältet",
       ],
     },
     {
