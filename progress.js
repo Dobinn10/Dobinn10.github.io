@@ -97,10 +97,10 @@ window.BARYCENTER = {
 
     // ── In progress ──────────────────────────────────────────
     {
-      status: "in-progress",
+      status: "done",
       version: "v0.4 · Phase 1 | v0.4 · Fas 1",
       title: "Ribbon and shortcuts | Menyband och kortkommandon",
-      summary: "Everything one click or one shortcut away. Built, now being fine-tuned. | Allt bara ett klick eller ett kortkommando bort. Klart och finjusteras nu.",
+      summary: "Everything one click or one shortcut away. Released as 0.4.6. | Allt bara ett klick eller ett kortkommando bort. Släppt som 0.4.6.",
       features: [
         "✓ Ribbon at the top like Word, with Home, Insert and View tabs | Menyband högst upp som i Word, med flikarna Start, Infoga och Visa",
         "✓ Hide the ribbon with Ctrl+F1, from the View tab or in settings | Dölj menybandet med Ctrl+F1, från fliken Visa eller i inställningarna",
@@ -108,7 +108,7 @@ window.BARYCENTER = {
         "✓ Command search with Ctrl+Shift+P | Sök bland kommandon med Ctrl+Shift+P",
         "✓ Alt key tips like Word (Alt, H, 1 for bold) | Bokstavstips med Alt som i Word (Alt, H, 1 för fetstil)",
         "✓ Bold, italic and more across several lines or list items | Fetstil, kursiv med mera över flera rader eller listpunkter",
-        "✓ Smoother checkboxes, quotes and find bar | Smidigare kryssrutor, citat och sökfält",
+        "✓ Smoother checkboxes, quotes, numbered lists and find bar | Smidigare kryssrutor, citat, numrerade listor och sökfält",
       ],
     },
 
