@@ -18,7 +18,7 @@
 
 window.BARYCENTER = {
   updated: "25 November 2026 | 25 november 2026",
-  currentVersion: "0.4.16",
+  currentVersion: "0.4.17",
 
   milestones: [
     // ── Done ─────────────────────────────────────────────────
@@ -139,19 +139,20 @@ window.BARYCENTER = {
       ],
     },
 
+    {
+      status: "done",
+      version: "v0.4 · Phase 4 | v0.4 · Fas 4",
+      title: "Learning the keys | Lär dig tangenterna",
+      summary: "A built-in manual for everything Barycenter can do. Released as 0.4.17. | En inbyggd manual för allt Barycenter kan. Släppt som 0.4.17.",
+      features: [
+        "✓ Manual with every shortcut and short how-tos, opened with F1 | Manual med alla kortkommandon och korta guider, öppnas med F1",
+        "✓ A tidy list of the most useful shortcuts on the start screen | En prydlig lista med de mest användbara kortkommandona på startskärmen",
+      ],
+    },
+
     // ── In progress ──────────────────────────────────────────
 
     // ── Planned ──────────────────────────────────────────────
-    {
-      status: "planned",
-      version: "v0.4 · Phase 4 | v0.4 · Fas 4",
-      title: "Learning the keys | Lär dig tangenterna",
-      summary: "A built-in manual for everything Barycenter can do. | En inbyggd manual för allt Barycenter kan.",
-      features: [
-        "Manual with every shortcut, opened with F1 | Manual med alla kortkommandon, öppnas med F1",
-        "A tidy list of the most useful shortcuts on the start screen | En prydlig lista med de mest användbara kortkommandona på startskärmen",
-      ],
-    },
     {
       status: "planned",
       version: "v0.5 · Phase 1 | v0.5 · Fas 1",
