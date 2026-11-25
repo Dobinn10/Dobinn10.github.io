@@ -126,10 +126,8 @@ window.BARYCENTER = {
     },
 
     // ── In progress ──────────────────────────────────────────
-
-    // ── Planned ──────────────────────────────────────────────
     {
-      status: "planned",
+      status: "in-progress",
       version: "v0.4 · Phase 3 | v0.4 · Fas 3",
       title: "Formatting selected text | Formatera markerad text",
       summary: "Quick formatting right where you select. | Snabb formatering precis där du markerar.",
@@ -139,6 +137,8 @@ window.BARYCENTER = {
         "Align text left, centre or right | Justera text till vänster, mitten eller höger",
       ],
     },
+
+    // ── Planned ──────────────────────────────────────────────
     {
       status: "planned",
       version: "v0.4 · Phase 4 | v0.4 · Fas 4",
@@ -151,43 +151,83 @@ window.BARYCENTER = {
     },
     {
       status: "planned",
-      version: "Writing | Skrivande",
-      title: "Writing features | Skrivfunktioner",
-      summary: "Richer notes without leaving plain markdown. | Rikare anteckningar, fortfarande i vanlig markdown.",
+      version: "v0.5 · Phase 1 | v0.5 · Fas 1",
+      title: "Links and footnotes in the text | Länkar och fotnoter i texten",
+      summary: "Connect notes right where you write. | Koppla ihop anteckningar precis där du skriver.",
       features: [
-        "Images: paste, resize, wrap text, crop | Bilder: klistra in, ändra storlek, låt texten flyta runt, beskär",
-        "Banner image at the top of a note | Omslagsbild högst upp i en anteckning",
-        "Tables you can tab through | Tabeller där Tab hoppar mellan cellerna",
-        "Links and footnotes inside the text | Länkar och fotnoter direkt i texten",
-        "Web previews and YouTube embeds | Förhandsvisning av webbsidor och inbäddade YouTube-videor",
-        "Math with LaTeX, lined up like Word's equations | Matematik med LaTeX, uppställd som ekvationer i Word",
+        "Link words in the text to a note with Ctrl+K | Länka ord i texten till en anteckning med Ctrl+K",
+        "Footnotes, numbered automatically, that can point to a note | Fotnoter som numreras automatiskt och kan peka på en anteckning",
+        "A References tab on the ribbon | En Referenser-flik i menybandet",
       ],
     },
     {
       status: "planned",
-      version: "Overview | Översikt",
+      version: "v0.5 · Phase 2 | v0.5 · Fas 2",
+      title: "Images and embeds | Bilder och inbäddningar",
+      summary: "Pictures and previews inside your notes. | Bilder och förhandsvisningar i dina anteckningar.",
+      features: [
+        "Images: paste, resize, wrap text, crop | Bilder: klistra in, ändra storlek, låt texten flyta runt, beskär",
+        "Banner image at the top of a note | Omslagsbild högst upp i en anteckning",
+        "Web previews and YouTube embeds | Förhandsvisning av webbsidor och inbäddade YouTube-videor",
+      ],
+    },
+    {
+      status: "planned",
+      version: "v0.5 · Phase 3 | v0.5 · Fas 3",
+      title: "Tables | Tabeller",
+      summary: "Tables that feel like Word. | Tabeller som känns som i Word.",
+      features: [
+        "Insert a table by size, Tab between cells | Infoga en tabell i vald storlek, hoppa mellan celler med Tab",
+        "Add or remove rows and columns | Lägg till eller ta bort rader och kolumner",
+      ],
+    },
+    {
+      status: "planned",
+      version: "v0.5 · Phase 4 | v0.5 · Fas 4",
+      title: "Math | Matematik",
+      summary: "Formulas and calculations, written like in Word. | Formler och uträkningar, skrivna som i Word.",
+      features: [
+        "Math with LaTeX, shown as finished formulas | Matematik med LaTeX, som visas som färdiga formler",
+        "Equations lined up on the = sign, like Word | Ekvationer uppställda efter likhetstecknet, som i Word",
+        "A Math button with common symbols and structures | En matteknapp med vanliga symboler och uppställningar",
+        "Shortcuts like \\alpha for α, right in normal text | Genvägar som \\alpha för α, direkt i vanlig text",
+      ],
+    },
+    {
+      status: "planned",
+      version: "v0.6 · Phase 1 | v0.6 · Fas 1",
+      title: "Templates | Mallar",
+      summary: "Start new notes from ready-made layouts. | Börja nya anteckningar från färdiga upplägg.",
+      features: [
+        "Templates folder and Ctrl+Shift+N | Mallmapp och Ctrl+Shift+N",
+        "Starter templates: book, movie, meeting, lecture | Färdiga mallar: bok, film, möte, föreläsning",
+      ],
+    },
+    {
+      status: "planned",
+      version: "v0.6 · Phase 2 | v0.6 · Fas 2",
+      title: "Note views | Anteckningsvyer",
+      summary: "Give some notes a special layout. | Ge vissa anteckningar en egen layout.",
+      features: [
+        "Review view with cover, rating and details | Recensionsvy med omslag, betyg och detaljer",
+        "A third view, maybe for people or projects | En tredje vy, kanske för personer eller projekt",
+      ],
+    },
+    {
+      status: "planned",
+      version: "v0.6 · Phase 3 | v0.6 · Fas 3",
       title: "Card overview | Kortöversikt",
       summary: "A new start screen with tags and notes as cards. | En ny startskärm med taggar och anteckningar som kort.",
       features: [
         "Tag cards with icon, colour and note count | Taggkort med ikon, färg och antal anteckningar",
         "Note cards with title, preview, tags and date | Anteckningskort med titel, förhandsvisning, taggar och datum",
         "A Home button in the sidebar | En hemknapp i sidofältet",
+        "Click a tag card to see its notes, with sorting | Klicka på ett taggkort för att se dess anteckningar, med sortering",
       ],
     },
     {
       status: "planned",
-      version: "Views | Vyer",
-      title: "Templates and note views | Mallar och anteckningsvyer",
-      summary: "Start notes from templates; give some notes a special layout. | Skapa anteckningar från mallar och ge vissa anteckningar en egen layout.",
-      features: [
-        "Templates folder and Ctrl+Shift+N | Mallmapp och Ctrl+Shift+N",
-        "Starter templates: book, movie, meeting, lecture | Färdiga mallar: bok, film, möte, föreläsning",
-        "Review view with cover, rating and details | Recensionsvy med omslag, betyg och detaljer",
-      ],
-    },
-    {
-      status: "planned",
-      version: "Insight | Insikt",
+      version: "v0.6 · Phase 4 | v0.6 · Fas 4",
       title: "Check-in charts | Diagram över incheckningar",
       summary: "See how the days add up. | Se hur dagarna hänger ihop.",
       features: [
@@ -197,9 +237,11 @@ window.BARYCENTER = {
         "Colours that show how good a value is | Färger som visar hur bra ett värde är",
       ],
     },
+
+    // ── After 0.6 ──
     {
       status: "planned",
-      version: "Galaxy | Galax",
+      version: "After 0.6 · Galaxy | Efter 0.6 · Galax",
       title: "The graph | Grafen",
       summary: "Linked notes form a galaxy you can fly through. | Länkade anteckningar bildar en galax som du kan flyga igenom.",
       features: [
@@ -209,7 +251,7 @@ window.BARYCENTER = {
     },
     {
       status: "planned",
-      version: "Research | Forskning",
+      version: "After 0.6 · Research | Efter 0.6 · Forskning",
       title: "Citations | Källhänvisningar",
       summary: "References that fill themselves in. | Referenser som fyller i sig själva.",
       features: [
@@ -219,7 +261,7 @@ window.BARYCENTER = {
     },
     {
       status: "planned",
-      version: "Canvas | Arbetsyta",
+      version: "After 0.6 · Canvas | Efter 0.6 · Arbetsyta",
       title: "Canvas | Arbetsyta",
       summary: "An endless board for note cards and images. | En oändlig tavla för anteckningskort och bilder.",
       features: [
@@ -229,7 +271,7 @@ window.BARYCENTER = {
     },
     {
       status: "planned",
-      version: "Home | Hem",
+      version: "After 0.6 · Home | Efter 0.6 · Hem",
       title: "Home screen | Startskärm",
       summary: "The center everything orbits. | Mittpunkten som allt kretsar kring.",
       features: [
@@ -240,7 +282,7 @@ window.BARYCENTER = {
     },
     {
       status: "planned",
-      version: "Agents | Agenter",
+      version: "After 0.6 · Agents | Efter 0.6 · Agenter",
       title: "AI helpers | AI-assistenter",
       summary: "Assistants that help plan the day. | Assistenter som hjälper till att planera dagen.",
       features: [
