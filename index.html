@@ -219,6 +219,11 @@
   .card li svg { width: 14px; height: 14px; margin-top: 4px; }
   .card li.ok svg { color: var(--done); }
   .card li.todo svg { color: var(--faint); }
+  .col .empty {
+    margin: 0; padding: 18px 20px; font-size: .9rem; color: var(--muted);
+    border: 1px dashed var(--panel-border); border-radius: 16px;
+    background: rgba(255, 250, 242, 0.35);
+  }
 
   footer {
     position: relative; z-index: 2;
@@ -320,7 +325,7 @@
         lede: "Barycenter is a notes app for Windows where every note is a plain markdown file in a folder you choose. Notes are grouped with tags and connected with links, and over time they form a galaxy. It's being built in the open, one version at a time.",
         done: "Done", "in-progress": "In progress", planned: "Planned",
         currentVersion: "Current version", milestonesDone: "Milestones done", featuresBuilt: "Features built",
-        of: "of", lastUpdated: "Last updated",
+        of: "of", lastUpdated: "Last updated", emptyCol: "Nothing here right now. The next phase starts soon.",
         description: "Barycenter is a personal notes app for Windows, being built in the open. Here's what's done and what's next."
       },
       sv: {
@@ -333,7 +338,7 @@
         lede: "Barycenter är en anteckningsapp för Windows där varje anteckning är en vanlig markdown-fil i en mapp som du själv väljer. Anteckningarna grupperas med taggar och kopplas ihop med länkar, och med tiden bildar de en galax. Appen byggs öppet, en version i taget.",
         done: "Klart", "in-progress": "Pågår", planned: "Planerat",
         currentVersion: "Nuvarande version", milestonesDone: "Klara etapper", featuresBuilt: "Klara funktioner",
-        of: "av", lastUpdated: "Senast uppdaterad",
+        of: "av", lastUpdated: "Senast uppdaterad", emptyCol: "Inget här just nu. Nästa fas börjar snart.",
         description: "Barycenter är en personlig anteckningsapp för Windows som byggs öppet. Här syns vad som är klart och vad som kommer härnäst."
       }
     };
@@ -403,6 +408,7 @@
         el.className = "col";
         el.setAttribute("data-status", key);
         var html = '<h3><span class="dot"></span>' + esc(T[key]) + '<span class="n">' + ms.length + '</span></h3>';
+        if (!ms.length) html += '<p class="empty">' + esc(T.emptyCol) + '</p>';
         ms.forEach(function (m) {
           var feats = (m.features || []).map(parse);
           var d = feats.filter(function (f) { return f.done; }).length;

@@ -18,7 +18,7 @@
 
 window.BARYCENTER = {
   updated: "25 November 2026 | 25 november 2026",
-  currentVersion: "0.4.6",
+  currentVersion: "0.4.10",
 
   milestones: [
     // ── Done ─────────────────────────────────────────────────
@@ -95,7 +95,6 @@ window.BARYCENTER = {
       ],
     },
 
-    // ── In progress ──────────────────────────────────────────
     {
       status: "done",
       version: "v0.4 · Phase 1 | v0.4 · Fas 1",
@@ -112,17 +111,23 @@ window.BARYCENTER = {
       ],
     },
 
-    // ── Planned ──────────────────────────────────────────────
     {
-      status: "planned",
+      status: "done",
       version: "v0.4 · Phase 2 | v0.4 · Fas 2",
-      title: "View modes | Visningslägen",
+      title: "View modes and a ribbon that adapts | Visningslägen och ett menyband som anpassar sig",
       summary: "Choose how a note looks while you work. | Välj hur en anteckning ser ut medan du arbetar.",
       features: [
-        "Three view modes: Source, Live preview and Reading | Tre visningslägen: källkod, direktvisning och läsläge",
-        "Switch between them from the View tab | Växla mellan dem från fliken Visa",
+        "✓ Three view modes: Source, Live preview and Reading | Tre visningslägen: källkod, direktvisning och läsläge",
+        "✓ Switch from the View tab or with a shortcut, remembered after restart | Växla från fliken Visa eller med ett kortkommando, och valet sparas",
+        "✓ Show spaces and line ends in Source | Visa mellanslag och radslut i källkodsläget",
+        "✓ Reading mode locks the text, but checkboxes still tick | Läsläget låser texten, men kryssrutor går fortfarande att bocka i",
+        "✓ The ribbon folds into menus in narrow windows, like Word | Menybandet fälls ihop till menyer i smala fönster, som i Word",
       ],
     },
+
+    // ── In progress ──────────────────────────────────────────
+
+    // ── Planned ──────────────────────────────────────────────
     {
       status: "planned",
       version: "v0.4 · Phase 3 | v0.4 · Fas 3",
