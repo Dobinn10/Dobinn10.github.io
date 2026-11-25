@@ -18,7 +18,7 @@
 
 window.BARYCENTER = {
   updated: "25 November 2026 | 25 november 2026",
-  currentVersion: "0.4.10",
+  currentVersion: "0.4.16",
 
   milestones: [
     // ── Done ─────────────────────────────────────────────────
@@ -125,18 +125,21 @@ window.BARYCENTER = {
       ],
     },
 
-    // ── In progress ──────────────────────────────────────────
     {
-      status: "in-progress",
+      status: "done",
       version: "v0.4 · Phase 3 | v0.4 · Fas 3",
       title: "Formatting selected text | Formatera markerad text",
-      summary: "Quick formatting right where you select. | Snabb formatering precis där du markerar.",
+      summary: "Quick formatting right where you select. Released as 0.4.16. | Snabb formatering precis där du markerar. Släppt som 0.4.16.",
       features: [
-        "A small toolbar next to selected text | Ett litet verktygsfält bredvid markerad text",
-        "Text size for selected words | Textstorlek för markerade ord",
-        "Align text left, centre or right | Justera text till vänster, mitten eller höger",
+        "✓ A small toolbar next to selected text, with more tools under … | Ett litet verktygsfält bredvid markerad text, med fler verktyg under …",
+        "✓ Text size for selected words, like Word's sizes | Textstorlek för markerade ord, med Words storlekar",
+        "✓ Align text left, centre or right | Justera text till vänster, mitten eller höger",
+        "✓ Type / for a menu of every command | Skriv / för en meny med alla kommandon",
+        "✓ Choose in settings which of these tools you want | Välj i inställningarna vilka av verktygen du vill ha",
       ],
     },
+
+    // ── In progress ──────────────────────────────────────────
 
     // ── Planned ──────────────────────────────────────────────
     {
