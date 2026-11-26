@@ -17,8 +17,8 @@
 // ─────────────────────────────────────────────────────────────
 
 window.BARYCENTER = {
-  updated: "25 November 2026 | 25 november 2026",
-  currentVersion: "0.5.4",
+  updated: "26 November 2026 | 26 november 2026",
+  currentVersion: "0.5.10",
 
   milestones: [
     // ── Done ─────────────────────────────────────────────────
@@ -164,30 +164,32 @@ window.BARYCENTER = {
       ],
     },
 
+    {
+      status: "done",
+      version: "v0.5 · Phase 2 | v0.5 · Fas 2",
+      title: "Images | Bilder",
+      summary: "Pictures inside your notes, handled like in Word. Released as 0.5.10. | Bilder i dina anteckningar, som i Word. Släppt som 0.5.10.",
+      features: [
+        "✓ Paste or drag in images, resize, align and crop them | Klistra in eller dra in bilder, ändra storlek, justera och beskär",
+        "✓ Captions that follow the image's alignment and can be links | Bildtexter som följer bildens justering och kan vara länkar",
+        "✓ A clean-up button for images no note uses | En rensningsknapp för bilder som ingen anteckning använder",
+      ],
+    },
+    {
+      status: "done",
+      version: "v0.5 · Phase 3 | v0.5 · Fas 3",
+      title: "Banner and embeds | Omslagsbild och inbäddningar",
+      summary: "A cover picture and live previews. Released as 0.5.10. | En omslagsbild och levande förhandsvisningar. Släppt som 0.5.10.",
+      features: [
+        "✓ Banner image at the top of a note, with its own middle point and zoom | Omslagsbild högst upp i en anteckning, med egen mittpunkt och zoom",
+        "✓ Web previews and YouTube videos inside notes | Förhandsvisning av webbsidor och YouTube-videor i anteckningar",
+        "✓ Paste a link as a link, a card or a video | Klistra in en länk som länk, kort eller video",
+      ],
+    },
+
     // ── In progress ──────────────────────────────────────────
 
     // ── Planned ──────────────────────────────────────────────
-    {
-      status: "planned",
-      version: "v0.5 · Phase 2 | v0.5 · Fas 2",
-      title: "Images | Bilder",
-      summary: "Pictures inside your notes, handled like in Word. | Bilder i dina anteckningar, som i Word.",
-      features: [
-        "Paste or drag in images, resize, align and crop them | Klistra in eller dra in bilder, ändra storlek, justera och beskär",
-        "Text that wraps around images | Text som flyter runt bilder",
-        "A clean-up button for images no note uses | En rensningsknapp för bilder som ingen anteckning använder",
-      ],
-    },
-    {
-      status: "planned",
-      version: "v0.5 · Phase 3 | v0.5 · Fas 3",
-      title: "Banner and embeds | Omslagsbild och inbäddningar",
-      summary: "A cover picture and live previews. | En omslagsbild och levande förhandsvisningar.",
-      features: [
-        "Banner image at the top of a note | Omslagsbild högst upp i en anteckning",
-        "Web previews and YouTube embeds | Förhandsvisning av webbsidor och inbäddade YouTube-videor",
-      ],
-    },
     {
       status: "planned",
       version: "v0.5 · Phase 4 | v0.5 · Fas 4",
