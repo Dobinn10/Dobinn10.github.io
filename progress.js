@@ -18,7 +18,7 @@
 
 window.BARYCENTER = {
   updated: "25 November 2026 | 25 november 2026",
-  currentVersion: "0.4.17",
+  currentVersion: "0.5.4",
 
   milestones: [
     // ── Done ─────────────────────────────────────────────────
@@ -150,34 +150,47 @@ window.BARYCENTER = {
       ],
     },
 
+    {
+      status: "done",
+      version: "v0.5 · Phase 1 | v0.5 · Fas 1",
+      title: "Links and footnotes in the text | Länkar och fotnoter i texten",
+      summary: "Connect notes right where you write, and cite your sources. Released as 0.5.4. | Koppla ihop anteckningar precis där du skriver, och ange dina källor. Släppt som 0.5.4.",
+      features: [
+        "✓ Link words in the text to a note with Ctrl+K or by typing [[ | Länka ord i texten till en anteckning med Ctrl+K eller genom att skriva [[",
+        "✓ Footnotes for sources, numbered automatically | Fotnoter för källor, som numreras automatiskt",
+        "✓ An APA 7 box that writes the reference for you | En APA 7-ruta som skriver referensen åt dig",
+        "✓ A References tab on the ribbon | En Referenser-flik i menybandet",
+        "✓ A warning before deleting a note other notes link to | En varning innan du raderar en anteckning som andra länkar till",
+      ],
+    },
+
     // ── In progress ──────────────────────────────────────────
 
     // ── Planned ──────────────────────────────────────────────
     {
       status: "planned",
-      version: "v0.5 · Phase 1 | v0.5 · Fas 1",
-      title: "Links and footnotes in the text | Länkar och fotnoter i texten",
-      summary: "Connect notes right where you write. | Koppla ihop anteckningar precis där du skriver.",
+      version: "v0.5 · Phase 2 | v0.5 · Fas 2",
+      title: "Images | Bilder",
+      summary: "Pictures inside your notes, handled like in Word. | Bilder i dina anteckningar, som i Word.",
       features: [
-        "Link words in the text to a note with Ctrl+K | Länka ord i texten till en anteckning med Ctrl+K",
-        "Footnotes, numbered automatically, that can point to a note | Fotnoter som numreras automatiskt och kan peka på en anteckning",
-        "A References tab on the ribbon | En Referenser-flik i menybandet",
+        "Paste or drag in images, resize, align and crop them | Klistra in eller dra in bilder, ändra storlek, justera och beskär",
+        "Text that wraps around images | Text som flyter runt bilder",
+        "A clean-up button for images no note uses | En rensningsknapp för bilder som ingen anteckning använder",
       ],
     },
     {
       status: "planned",
-      version: "v0.5 · Phase 2 | v0.5 · Fas 2",
-      title: "Images and embeds | Bilder och inbäddningar",
-      summary: "Pictures and previews inside your notes. | Bilder och förhandsvisningar i dina anteckningar.",
+      version: "v0.5 · Phase 3 | v0.5 · Fas 3",
+      title: "Banner and embeds | Omslagsbild och inbäddningar",
+      summary: "A cover picture and live previews. | En omslagsbild och levande förhandsvisningar.",
       features: [
-        "Images: paste, resize, wrap text, crop | Bilder: klistra in, ändra storlek, låt texten flyta runt, beskär",
         "Banner image at the top of a note | Omslagsbild högst upp i en anteckning",
         "Web previews and YouTube embeds | Förhandsvisning av webbsidor och inbäddade YouTube-videor",
       ],
     },
     {
       status: "planned",
-      version: "v0.5 · Phase 3 | v0.5 · Fas 3",
+      version: "v0.5 · Phase 4 | v0.5 · Fas 4",
       title: "Tables | Tabeller",
       summary: "Tables that feel like Word. | Tabeller som känns som i Word.",
       features: [
@@ -187,7 +200,7 @@ window.BARYCENTER = {
     },
     {
       status: "planned",
-      version: "v0.5 · Phase 4 | v0.5 · Fas 4",
+      version: "v0.5 · Phase 5 | v0.5 · Fas 5",
       title: "Math | Matematik",
       summary: "Formulas and calculations, written like in Word. | Formler och uträkningar, skrivna som i Word.",
       features: [
